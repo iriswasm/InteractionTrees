@@ -3,14 +3,14 @@
 .PHONY: coq clean-coq
 
 coq: Makefile.coq
-	$(MAKE) -f Makefile.coq
+	export HOME=`pwd`; $(MAKE) -f Makefile.coq
 
 clean-coq:
 	if [ -e Makefile.coq ] ; then $(MAKE) -f Makefile.coq cleanall ; fi
 	$(RM) Makefile.coq Makefile.coq.conf
 
 Makefile.coq: _CoqProject
-	coq_makefile -f $< -o $@
+	coq_makefile -f $< -o $@ $(COQMAKEFILEOPTIONS)
 
 ## coqdoc -------------------------------------------------
 COQDOCFLAGS:= \

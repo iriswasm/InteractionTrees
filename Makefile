@@ -13,10 +13,10 @@ all:
 	$(MAKE) test
 
 install: Makefile.coq coq
-	$(MAKE) -f $< $@
+	export HOME=`pwd`; $(MAKE) -f $< $@
 
 uninstall: Makefile.coq
-	$(MAKE) -f $< $@
+	export HOME=`pwd`; $(MAKE) -f $< $@
 
 test: examples tests
 
@@ -57,3 +57,4 @@ depgraph:
 	$(COQDEP) -dumpgraph $(DEPS_DOT) $(shell cat _CoqConfig) > /dev/null 2>&1
 	sed 's%\("theories/\([^"]*\)/\([^"/]*\)"\[label="\)%\1\2/\\n%' -i $(DEPS_DOT)
 	dot $(DEPS_DOT) -Tjpg -o$(DEPS_OUT)
+

@@ -43,3 +43,7 @@ examples/io.mli
 examples/extracted/
 
 *.native
+
+_esy/
+node_modules/
+
