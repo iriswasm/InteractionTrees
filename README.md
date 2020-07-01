@@ -32,7 +32,7 @@ See also [the tutorial](./tutorial/README.md).
 
 ## Dependencies
 
-- [coq](https://coq.inria.fr/) (8.8, 8.9, or 8.10)
+- [coq](https://coq.inria.fr/) (8.8, 8.9, 8.10, or 8.11.1)
 - [coq-paco](https://github.com/snu-sf/paco)
 - [coq-ext-lib](https://github.com/coq-ext-lib/coq-ext-lib)
 
@@ -48,16 +48,15 @@ Feel free to open an issue or a pull request!
 
 ### Build
 
-Install dependencies with opam.
-
+First, install esy.
+One way is through npm:
+```bash
+npm install --global esy@latest
 ```
-opam install coq-paco coq-ext-lib
-```
 
-Now you can build the project with:
-
-```
-make
+Calling esy will then download and compile the dependencies and the project:
+```bash
+esy
 ```
 
 ### Build the Documentation

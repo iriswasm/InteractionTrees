@@ -14,10 +14,14 @@
 		"build": "make",
 		"install": "make install"
 	},
+	"scripts": {
+		"clean": "make clean-coq clean"
+	},
 	"dependencies": {
-		"@opam/coq": "8.10.1",
+		"@opam/coq": ">=8.8 <=8.11.1",
 		"coq-paco": "github:Mbodin/coq-paco#ca6a4b5f12a5fedac6a47ee775bc2e1b36ce7520",
-		"coq-ext-lib": "0.11.1"
+		"coq-ext-lib": "0.11.1",
+		"ocaml": "*"
 	},
 	"resolutions": {
 		"coq-ext-lib": {
@@ -25,7 +29,8 @@
 			"version": "0.11.1",
 			"override": {
 				"dependencies": {
-					"@opam/coq": "*"
+					"@opam/coq": "*",
+					"ocaml": "*"
 				},
 				"buildsInSource": true,
 				"buildEnv": {
