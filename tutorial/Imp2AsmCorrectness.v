@@ -52,11 +52,10 @@ SAZ: This needs to be updated.
  *)
 
 (* begin hide *)
-Require Import Imp Asm Utils_tutorial AsmCombinators Imp2Asm Fin KTreeFin.
-
-Require Import Psatz.
+From ITreeTutorial Require Import Imp Asm Utils_tutorial AsmCombinators Imp2Asm Fin KTreeFin.
 
 From Coq Require Import
+     Psatz
      Strings.String
      List
      Program.Basics
@@ -69,6 +68,7 @@ From ITree Require Import
      ITree
      ITreeFacts
      Basics.CategorySub
+     Basics.HeterogeneousRelations
      Events.StateFacts
      Events.MapDefault.
 
@@ -84,10 +84,9 @@ Import ListNotations.
 Open Scope string_scope.
 
 Import CatNotations.
-Local Open Scope cat.
+Local Open Scope cat_scope.
+Local Open Scope itree_scope.
 
-Import Monads.
-Open Scope monad_scope.
 (* end hide *)
 
 
@@ -788,7 +787,7 @@ Section Correctness.
     - intros _ _ [].
       rewrite <- bind_ret_r at 1.
       eapply eutt_clo_bind; try reflexivity.
-      intros [|[]] _ []; apply eqit_Ret; auto.
+      intros [|[]] _ []; apply eqit_Ret; auto; constructor; auto.
     - constructor.
   Qed.
 
@@ -942,7 +941,7 @@ Section Correctness.
         red.
         rewrite <- eqit_Ret.
         unfold state_invariant. simpl.
-        split; auto.
+        split; auto; constructor; auto.
 
       + (* In the true case, we line up the body of the loop to use the induction hypothesis *)
         rewrite !interp_asm_bind.

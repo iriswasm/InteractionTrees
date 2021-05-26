@@ -21,16 +21,16 @@ From ITree Require Import
      Interp.InterpFacts
      Interp.RecursionFacts.
 
-Import ITree.Basics.Basics.Monads.
 Import ITreeNotations.
+Import ITree.Basics.Basics.Monads.
 
-Open Scope itree_scope.
+Local Open Scope itree_scope.
 
 (* end hide *)
 
 Section HandlerCategory.
 
-Local Opaque eutt ITree.bind' interp ITree.trigger.
+Local Opaque eutt ITree.bind interp ITree.trigger.
 
 Instance Proper_Cat_Handler {A B C}
   : @Proper (Handler A B -> Handler B C -> Handler A C)
@@ -209,12 +209,11 @@ Inductive interleaved
 | interleaved_Ret r : interleaved (Ret r) (Ret r)
 | interleaved_Left {U} (t : itree _ U) k1 k2 :
     (forall (x : U), interleaved (k1 x) (k2 x)) ->
-    interleaved (interp (case_ g inr_) t >>= k1) (t >>= k2)
+    interleaved (interp (handle (case_ g inr_)) t >>= k1) (t >>= k2)
 | interleaved_Right {U} (t : itree _ U) k1 k2 :
     (forall (x : U), interleaved (k1 x) (k2 x)) ->
-    interleaved (t >>= k1) (interp (case_ f inr_) t >>= k2)
+    interleaved (t >>= k1) (interp (handle (case_ f inr_)) t >>= k2)
 .
-
 Hint Constructors interleaved: core.
 
 Let hg := @case_ _ Handler _ _ _ _ _ g inr_.
@@ -240,7 +239,7 @@ Proof.
         change (g X b) with (Tau (g0 X b)).
         rewrite bind_tau, unfold_interp_mrec; cbn.
         etau. rewrite tau_euttge. ebase.
-      * unfold inr_ at 3, Inr_sum1_Handler at 3, Handler.inr_, Handler.htrigger.
+      * unfold inr_, Inr_sum1_Handler, Handler.inr_, Handler.htrigger.
         rewrite bind_trigger.
         rewrite unfold_interp_mrec; cbn.
         evis; intros; etau. rewrite tau_euttge. ebase.
@@ -256,7 +255,7 @@ Proof.
         change (f X a) with (Tau (f0 X a)).
         rewrite !bind_tau, (unfold_interp_mrec _ _ (Tau _)); cbn.
         etau. rewrite tau_euttge. ebase.
-      * unfold inr_ at 4, Inr_sum1_Handler at 4, Handler.inr_, Handler.htrigger.
+      * unfold inr_, Inr_sum1_Handler, Handler.inr_, Handler.htrigger.
         rewrite bind_trigger.
         rewrite unfold_interp_mrec; cbn.
         evis; intros; etau. rewrite tau_euttge. ebase.
