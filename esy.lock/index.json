@@ -1,5 +1,5 @@
 {
-  "checksum": "1ed20c2b1cf93c53a937445e11e48649",
+  "checksum": "76eb9e90d12b9feab6b65b78b82c3e8d",
   "root": "coq-itree@link-dev:./package.json",
   "node": {
     "ocaml@4.12.0@d41d8cd9": {
@@ -61,21 +61,21 @@
       "dependencies": [
         "ocaml@4.12.0@d41d8cd9",
         "coq-paco@github:Mbodin/paco#40cea8feac992e4b69266516ed70f0916366d622@d41d8cd9",
-        "coq-ext-lib@github:coq-community/coq-ext-lib#ddeab06b09115f66db54b2997df390cd7599eec6@2b47b01a",
+        "coq-ext-lib@github:coq-community/coq-ext-lib#159c36111a95e5e587020c9f10b2e2ecd9fa3914@2b47b01a",
         "@opam/coq@opam:8.13.2@83f70563"
       ],
       "devDependencies": []
     },
-    "coq-ext-lib@github:coq-community/coq-ext-lib#ddeab06b09115f66db54b2997df390cd7599eec6@2b47b01a": {
+    "coq-ext-lib@github:coq-community/coq-ext-lib#159c36111a95e5e587020c9f10b2e2ecd9fa3914@2b47b01a": {
       "id":
-        "coq-ext-lib@github:coq-community/coq-ext-lib#ddeab06b09115f66db54b2997df390cd7599eec6@2b47b01a",
+        "coq-ext-lib@github:coq-community/coq-ext-lib#159c36111a95e5e587020c9f10b2e2ecd9fa3914@2b47b01a",
       "name": "coq-ext-lib",
       "version":
-        "github:coq-community/coq-ext-lib#ddeab06b09115f66db54b2997df390cd7599eec6",
+        "github:coq-community/coq-ext-lib#159c36111a95e5e587020c9f10b2e2ecd9fa3914",
       "source": {
         "type": "install",
         "source": [
-          "github:coq-community/coq-ext-lib#ddeab06b09115f66db54b2997df390cd7599eec6"
+          "github:coq-community/coq-ext-lib#159c36111a95e5e587020c9f10b2e2ecd9fa3914"
         ]
       },
       "overrides": [

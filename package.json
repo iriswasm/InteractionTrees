@@ -20,13 +20,13 @@
 	"dependencies": {
 		"@opam/coq": ">=8.8 <=8.13.2",
 		"coq-paco": "github:Mbodin/paco#40cea8feac992e4b69266516ed70f0916366d622",
-		"coq-ext-lib": "0.11.1",
+		"coq-ext-lib": "0.11.3",
 		"ocaml": "*"
 	},
 	"resolutions": {
 		"coq-ext-lib": {
-			"source": "github:coq-community/coq-ext-lib#ddeab06b09115f66db54b2997df390cd7599eec6",
-			"version": "0.11.1",
+			"source": "github:coq-community/coq-ext-lib#159c36111a95e5e587020c9f10b2e2ecd9fa3914",
+			"version": "0.11.3",
 			"override": {
 				"dependencies": {
 					"@opam/coq": "*",
