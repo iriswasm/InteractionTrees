@@ -1,4 +1,4 @@
-.PHONY: clean all coq test tests examples tutorial install uninstall depgraph for-dune
+.PHONY: clean all coq test tests examples tutorial install uninstall depgraph for-dune dune-all
 
 HOME ?= `pwd`
 export HOME
@@ -14,6 +14,10 @@ all:
 	$(MAKE) coq
 	$(MAKE) tutorial
 	$(MAKE) test
+
+dune-all:
+	dune build -p coq-itree
+	#dune build -p coq-itree-tutorial
 
 install: Makefile.coq coq
 	$(MAKE) -f $< $@

@@ -4,15 +4,13 @@
 	"description": "A Library for Representing Recursive and Impure Programs in Coq",
 	"license": "MIT",
 	"esy": {
-		"buildsInSource": true,
+		"buildsInSource": "_build",
 		"buildEnv": {
 			"COQBIN": "#{@opam/coq.bin}/",
 			"COQLIB": "#{@opam/coq.lib}/coq/",
-			"COQPATH": "#{coq-paco.install}/user-contrib:#{coq-ext-lib.install}/user-contrib",
-			"COQMAKEFILEOPTIONS": "-install user DESTDIR = '#{self.install}' COQMF_WINDRIVE = '#{@opam/coq.lib}/coq'"
+			"COQPATH": "#{coq-paco.install}/user-contrib:#{coq-ext-lib.install}/user-contrib"
 		},
-		"build": "make",
-		"install": "make install"
+		"build": "make dune-all"
 	},
 	"scripts": {
 		"clean": "make clean-coq clean"
@@ -20,8 +18,9 @@
 	"dependencies": {
 		"@opam/ocamlfind": "1.8.1",
 		"@opam/coq": ">=8.10 <=8.13.2",
-		"coq-paco": "github:Mbodin/paco#40cea8feac992e4b69266516ed70f0916366d622",
-		"coq-ext-lib": "0.11.4"
+		"coq-paco": "github:Mbodin/coq-paco#40cea8feac992e4b69266516ed70f0916366d622",
+		"coq-ext-lib": ">=0.11.1",
+		"@opam/dune": ">=2.6"
 	},
 	"resolutions": {
 		"coq-ext-lib": {
