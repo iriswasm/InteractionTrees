@@ -1,6 +1,6 @@
 {
 	"name": "coq-itree",
-	"version": "1.0.0",
+	"version": "4.0.0",
 	"description": "A Library for Representing Recursive and Impure Programs in Coq",
 	"license": "MIT",
 	"esy": {
@@ -18,19 +18,18 @@
 		"clean": "make clean-coq clean"
 	},
 	"dependencies": {
-		"@opam/coq": ">=8.8 <=8.13.2",
+		"@opam/ocamlfind": "1.8.1",
+		"@opam/coq": ">=8.10 <=8.13.2",
 		"coq-paco": "github:Mbodin/paco#40cea8feac992e4b69266516ed70f0916366d622",
-		"coq-ext-lib": "0.11.3",
-		"ocaml": "*"
+		"coq-ext-lib": "0.11.4"
 	},
 	"resolutions": {
 		"coq-ext-lib": {
-			"source": "github:coq-community/coq-ext-lib#159c36111a95e5e587020c9f10b2e2ecd9fa3914",
-			"version": "0.11.3",
+			"source": "github:coq-community/coq-ext-lib#aeb71ca2f5e5538f23f287772d3d84b35241415a",
+			"version": "0.11.4",
 			"override": {
 				"dependencies": {
-					"@opam/coq": "*",
-					"ocaml": "*"
+					"@opam/coq": "*"
 				},
 				"buildsInSource": true,
 				"buildEnv": {
@@ -41,7 +40,9 @@
 				},
 				"build": [
 					[ "coq_makefile", "-f", "_CoqProject", "-o", "Makefile.coq", "-install", "user", "DESTDIR", "=", "#{self.install}", "COQMF_WINDRIVE", "=", "#{@opam/coq.lib}/coq" ],
-					[ "make", "-j2", "theories" ],
+					[ "make", "-j", "theories" ]
+				],
+				"install": [
 					[ "make", "install" ]
 				]
 			}

@@ -1,5 +1,8 @@
 .PHONY: clean all coq test tests examples tutorial install uninstall depgraph for-dune
 
+HOME ?= `pwd`
+export HOME
+
 COQPATHFILE=$(wildcard _CoqPath)
 
 build: coq
@@ -13,10 +16,10 @@ all:
 	$(MAKE) test
 
 install: Makefile.coq coq
-	export HOME=`pwd`; $(MAKE) -f $< $@
+	$(MAKE) -f $< $@
 
 uninstall: Makefile.coq
-	export HOME=`pwd`; $(MAKE) -f $< $@
+	$(MAKE) -f $< $@
 
 test: examples tests
 

@@ -2,8 +2,11 @@
 
 .PHONY: coq clean-coq html
 
+HOME ?= `pwd`
+export HOME
+
 coq: Makefile.coq
-	export HOME=`pwd`; $(MAKE) -f Makefile.coq
+	$(MAKE) -f Makefile.coq
 
 clean-coq: _CoqProject
 	if [ -e Makefile.coq ] ; then $(MAKE) -f Makefile.coq cleanall ; fi
