@@ -11,6 +11,7 @@ From Coq Require Import
 
 From ITree Require Import
      Basics.Category
+     Basics.HeterogeneousRelations
      Basics.Monad
      ITree
      ITreeMonad
@@ -33,9 +34,11 @@ Import ListNotations.
 Open Scope string_scope.
 
 Import CatNotations.
-Open Scope cat_scope.
+Local Open Scope cat_scope.
+Local Open Scope itree_scope.
 
-Require Import Fin Asm AsmCombinators Utils_tutorial.
+From ITreeTutorial Require Import Fin Asm AsmCombinators Utils_tutorial.
+
 (* end hide *)
 
 (* optimizations ------------------------------------------------------------ *)
@@ -99,7 +102,7 @@ Qed.
 Definition rel_asm {B} : memory * (registers * B) -> memory * (registers * B) -> Prop :=
   prod_rel EQ_memory (prod_rel (EQ_registers 0) eq).
 
-Hint Unfold rel_asm: core.
+Global Hint Unfold rel_asm: core.
 
 (** The definition [interp_asm] also induces a notion of equivalence (open)
     _asm_ programs, which is just the equivalence of the ktree category *)
@@ -141,13 +144,12 @@ Proof.
   }
   intros.
   inversion H; subst.
-  inversion H3. subst.
+  inversion H3; subst.
   unfold interp_asm.
   unfold interp_map.
   rewrite interp_ret.
   do 2 rewrite interp_state_ret.
-  apply eqit_Ret. constructor. auto. destruct b3.
-  assumption.
+  apply eqit_Ret. destruct b3. auto.
 Qed.
 
 Lemma interp_asm_ret {E A} (x:A) mem reg :
@@ -157,6 +159,13 @@ Proof.
   rewrite interp_ret.
   repeat rewrite interp_state_ret.
   reflexivity.
+Qed.
+
+Global Instance rel_asm_eqv :
+  forall A, Equivalence (@rel_asm A).
+Proof.
+  intros.
+  unfold rel_asm. eapply prod_rel_eqv; try typeclasses eauto.
 Qed.
 
 Lemma interp_asm_GetReg {E A} f r mem reg :
@@ -265,6 +274,16 @@ Proof.
   reflexivity.
 Qed.
 
+Lemma interp_state_iter' {E F } S (f : E ~> Monads.stateT S (itree F)) {I A}
+      (t  : I -> itree E (I + A))
+  : forall i, state_eq (State.interp_state f (ITree.iter t i))
+                       (Basics.iter (fun i => State.interp_state f (t i)) i).
+Proof.
+  eapply interp_state_iter.
+  intros i.
+  red. reflexivity.
+Qed.
+
 (* peephole optimizations --------------------------------------------------- *)
 
 (** A (simple) peephole optmization transforms one instruction into a
@@ -341,7 +360,7 @@ Proof.
       rewrite interp_ret.
       unfold interp_map.
       repeat rewrite interp_state_ret.
-      apply eqit_Ret. constructor; auto.
+      apply eqit_Ret. constructor; auto; constructor; auto.
     + setoid_rewrite interp_asm_GetReg.
       rewrite H1.
       unfold value in *.
@@ -350,7 +369,7 @@ Proof.
       repeat rewrite interp_asm_ret.
       apply eqit_Ret. constructor; auto.
       repeat rewrite interp_asm_ret.
-      apply eqit_Ret. constructor; auto.
+      apply eqit_Ret. constructor; auto. 
     + unfold interp_asm, interp_map.
       unfold id_, Id_Handler, Handler.id_.
       unfold exit.
@@ -391,7 +410,7 @@ Proof.
        unfold ret, Monad_itree.
        repeat rewrite interp_ret.
        repeat rewrite interp_state_ret.
-       apply eqit_Ret. constructor; auto.
+       apply eqit_Ret. constructor; auto. 
     -  intros. inversion H0.
        subst. cbn.
        unfold CategorySub.from_bif, FromBifunctor_ktree_fin.
@@ -438,13 +457,16 @@ Proof.
     unfold CategorySub.from_bif, FromBifunctor_ktree_fin.
     destruct split_fin_sum.
     all: rewrite !bind_ret_l, interp_ret, !interp_state_ret.
-    all: apply eqit_Ret; auto.
+    all: apply eqit_Ret; auto; constructor; auto.
+    all : constructor; auto.
   }
 
   rewrite interp_ret, !interp_state_ret, !bind_ret_l.
   rewrite !interp_state_ret, !bind_ret_l; cbn.
   apply eqit_Ret.
-  destruct split_fin_sum; auto.
+  destruct split_fin_sum; auto; constructor; auto.
+  all : econstructor; auto.
+  all : constructor; auto.
 Qed.
 
 
@@ -513,7 +535,9 @@ Proof.
       rewrite bind_ret_l, tau_eutt.
       rewrite interp_state_ret, bind_ret_l, interp_ret. cbn.
       rewrite tau_eutt, 2 interp_state_ret.
-      apply eqit_Ret. auto using EQ_registers_add.
+      apply eqit_Ret.
+      constructor; auto; constructor; auto.
+      auto using EQ_registers_add.
     * apply Nat.eqb_neq in n.
       rewrite n.
       apply interp_asm_ret_tt; auto.

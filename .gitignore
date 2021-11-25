@@ -34,6 +34,7 @@ _CoqProject
 _CoqPath
 lib/
 html/
+doc
 coqdocjs*
 
 tests/extraction/*.ml
@@ -41,9 +42,13 @@ tests/extraction/*.mli
 examples/io.ml
 examples/io.mli
 examples/extracted/
+tutorial/imp_test.ml
+tutorial/imp_test.mli
 
 *.native
 
 _esy/
 node_modules/
+
+coq-itree.install
 

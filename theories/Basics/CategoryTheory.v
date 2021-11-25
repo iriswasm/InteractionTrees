@@ -7,7 +7,8 @@
 From Coq Require Import Setoid Morphisms.
 
 From ITree.Basics Require Import
-     CategoryOps.
+     CategoryOps
+     CategoryFunctor.
 
 Import Carrier.
 Import CatNotations.
@@ -48,6 +49,12 @@ Class Category : Prop := {
 Class InitialObject (i : obj) {Initial_i : Initial C i} : Prop :=
   initial_object : forall a (f : C i a), f ⩯ empty.
 
+(** *** Terminal object *)
+
+(** There is a unique morphism from any other object and the terminal object. *)
+Class TerminalObject (t : obj) {Terminal_t : Terminal C t} : Prop :=
+  terminal_object : forall a (f : C a t), f ⩯ one.
+
 End CatLaws.
 
 Arguments cat_id_l {obj C Eq2C IdC CatC CatIdL} [a b] f.
@@ -55,9 +62,13 @@ Arguments cat_id_r {obj C Eq2C IdC CatC CatIdR} [a b] f.
 Arguments cat_assoc {obj C Eq2C CatC CatAssoc} [a b c d] f g.
 Arguments category_proper_cat {obj C Eq2C IdC CatC Category} [a b c].
 Arguments initial_object {obj C Eq2C i Initial_i InitialObject} [a] f.
+Arguments terminal_object {obj C Eq2C t Terminal_t TerminalObject} [a] f.
 
 (** Synonym of [initial_object]. *)
 Notation unique_initial := initial_object.
+
+(** Synonym of [terminal_object]. *)
+Notation unique_terminal := terminal_object.
 
 (** ** Mono-, Epi-, Iso- morphisms *)
 
@@ -94,6 +105,56 @@ Class Iso {a b : obj} (f : C a b) (f' : C b a) : Prop := {
 End SemiIso.
 
 Arguments semi_iso {obj C Eq2C IdC CatC a b} f f' {SemiIso}.
+
+(** ** Opposite *)
+
+Section OppositeCat.
+
+  Context {obj : Type} (C : Hom obj).
+  Context {Eq2C : Eq2 C} {IdC : Id_ C} {CatC : Cat C}.
+
+  (* All these opposite instances are prone to trigger loops in instance
+     resolution, notably if the category C for which an instance is looked after is a
+     meta-variable.
+     It also loops easily with the [Fun] since it can interpret it as being [Op]
+     too easily.
+     I therefore don't declare them [Global] and use [Local Existing Instance] where
+     needed. I don't know if there's a better way to go.
+   *)
+  Instance Eq2_Op : Eq2 (op C) :=
+    fun a b => eq2 (C := C).
+
+  Instance Id_Op : Id_ (op C) :=
+    id_ (C := C).
+
+  Instance Cat_Op : Cat (op C) :=
+    fun a b c f g => cat (C := C) g f.
+
+End OppositeCat.
+
+(** ** Dagger *)
+
+Section DaggerLaws.
+
+  Context {obj : Type} (C : Hom obj).
+  Context {Eq2C : Eq2 C} {IdC : Id_ C} {CatC : Cat C}.
+  Context {DagC : Dagger C}.
+
+   Instance Dagger_Op : Dagger (op C) :=
+    fun a b f => dagger (C := C) f.
+
+  Class DaggerInvolution : Prop :=
+    dagger_invol : forall a b (f: C a b), dagger (dagger f) ⩯ f.
+
+  Local Existing Instance Eq2_Op.
+  Local Existing Instance Id_Op.
+  Local Existing Instance Cat_Op.
+  Class DaggerLaws : Prop := {
+    dagger_involution :> DaggerInvolution ;
+    dagger_functor :> Functor (op C) C id (@dagger obj C _)
+   }.
+
+End DaggerLaws.
 
 (** ** Bifunctors *)
 
@@ -175,6 +236,82 @@ Arguments case_universal {obj C _ _ bif _ _ _ _} [a b c] f g fg.
 (** More intuitive names. *)
 Notation inl_case := case_inl.
 Notation inr_case := case_inr.
+(** ** Products *)
+
+(** These laws capture the essence of products. *)
+
+Section ProductLaws.
+
+Context {obj : Type} (C : Hom obj).
+Context {Eq2_C : Eq2 C} {Id_C : Id_ C} {Cat_C : Cat C}.
+Context (bif : binop obj).
+Context {Pair_C : Pair C bif}
+        {Fst_C : Fst C bif}
+        {Snd_C : Snd C bif}.
+
+Class PairFst : Prop :=
+  pair_fst : forall a b c (f : C a b) (g : C a c),
+    pair_ f g >>> fst_ ⩯ f.
+
+Class PairSnd : Prop :=
+  pair_snd : forall a b c (f : C a b) (g : C a c),
+    pair_ f g >>> snd_ ⩯ g.
+
+(** Uniqueness of products *)
+Class PairUniversal : Prop :=
+  pair_universal :
+    forall a b c (f : C c a) (g : C c b) (fg : C c (bif a b)),
+      (fg >>> fst_ ⩯ f) ->
+      (fg >>> snd_ ⩯ g) ->
+      fg ⩯ pair_ f g.
+
+Class Product : Prop := {
+  product_pair_fst :> PairFst;
+  product_pair_snd :> PairSnd;
+  product_pair_universal :> PairUniversal;
+  product_proper_pair :> forall a b c,
+      @Proper (C c a -> C c b -> C c _) (eq2 ==> eq2 ==> eq2) pair_
+}.
+
+End ProductLaws.
+
+Arguments pair_fst {obj C Eq2_C Cat_C bif Pair_C Fst_C PairFst} [a b c] f g.
+Arguments pair_snd {obj C Eq2_C Cat_C bif Pair_C Snd_C PairSnd} [a b c] f g.
+Arguments pair_universal {obj C _ _ bif _ _ _ _} [a b c] f g fg.
+
+(** Cartesian Closure *)
+Section CartesianClosureLaws.
+
+Context {obj : Type} (C : Hom obj).
+Context {Eq2_C : Eq2 C} {Id_C : Id_ C} {Cat_C : Cat C}.
+Context (ONE : obj)
+        {Term_C : Terminal C ONE}.
+Context (PROD : binop obj).
+Context {Pair_C : Pair C PROD}
+        {Fst_C : Fst C PROD}
+        {Snd_C : Snd C PROD}.
+Context (EXP : binop obj).
+Context {Apply_C : Apply C PROD EXP}
+        {Curry_C : Curry C PROD EXP}.
+
+Existing Instance Bimap_Product.
+
+Class CurryApply : Prop :=
+  curry_apply :
+    forall a b c (f : C (PROD c a) b),
+      f ⩯ ((@bimap obj C PROD _ _ _ _ _ (curry_ f) (id_ a)) >>> apply_).
+
+Class CartesianClosed : Prop := {
+  cartesian_terminal :> TerminalObject _ ONE;
+  cartesian_product :> Product _ PROD;
+  cartesian_curry_apply :> CurryApply;
+  cartesian_proper_curry_ :> forall a b c,
+    @Proper (C (PROD c a) b -> C c (EXP a b)) (eq2 ==> eq2) curry_                          
+}.
+  
+End CartesianClosureLaws.
+
+Arguments curry_apply {obj C Eq2_C Id_C Cat_C PROD Pair_C Fst_C Snd_C EXP Apply_C Curry_C} _ [a b c] f.
 
 (** ** Monoidal categories *)
 
