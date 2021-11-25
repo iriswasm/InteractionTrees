@@ -1,5 +1,5 @@
 {
-  "checksum": "6a1700252bb306683eb188a84fe34197",
+  "checksum": "c28128438d504092bafeb99a2b7dbbbf",
   "root": "coq-itree@link-dev:./package.json",
   "node": {
     "ocaml@4.11.2000@d41d8cd9": {
@@ -32,6 +32,22 @@
       "dependencies": [],
       "devDependencies": []
     },
+    "esy-gmp@archive:https://gmplib.org/download/gmp/gmp-6.2.1.tar.xz#sha1:0578d48607ec0e272177d175fd1807c30b00fdf2@d3dc108f": {
+      "id":
+        "esy-gmp@archive:https://gmplib.org/download/gmp/gmp-6.2.1.tar.xz#sha1:0578d48607ec0e272177d175fd1807c30b00fdf2@d3dc108f",
+      "name": "esy-gmp",
+      "version":
+        "archive:https://gmplib.org/download/gmp/gmp-6.2.1.tar.xz#sha1:0578d48607ec0e272177d175fd1807c30b00fdf2",
+      "source": {
+        "type": "install",
+        "source": [
+          "archive:https://gmplib.org/download/gmp/gmp-6.2.1.tar.xz#sha1:0578d48607ec0e272177d175fd1807c30b00fdf2"
+        ]
+      },
+      "overrides": [ "esy.lock/overrides/d3dc108f8f9f64699d29c9c180f20b50" ],
+      "dependencies": [],
+      "devDependencies": []
+    },
     "coq-paco@github:Mbodin/coq-paco#40cea8feac992e4b69266516ed70f0916366d622@d41d8cd9": {
       "id":
         "coq-paco@github:Mbodin/coq-paco#40cea8feac992e4b69266516ed70f0916366d622@d41d8cd9",
@@ -45,7 +61,7 @@
         ]
       },
       "overrides": [],
-      "dependencies": [ "@opam/coq@opam:8.12.2@fe49cd42" ],
+      "dependencies": [ "@opam/coq@opam:8.13.2@91755ac9" ],
       "devDependencies": []
     },
     "coq-itree@link-dev:./package.json": {
@@ -63,7 +79,7 @@
         "coq-paco@github:Mbodin/coq-paco#40cea8feac992e4b69266516ed70f0916366d622@d41d8cd9",
         "coq-ext-lib@github:coq-community/coq-ext-lib#43e979ba74200ec924c28561b3f189fe37ff5c07@03456615",
         "@opam/ocamlfind@opam:1.8.1@b7dc3072",
-        "@opam/dune@opam:2.9.1@1e504822", "@opam/coq@opam:8.12.2@fe49cd42"
+        "@opam/dune@opam:2.9.1@1e504822", "@opam/coq@opam:8.13.2@91755ac9"
       ],
       "devDependencies": []
     },
@@ -101,9 +117,40 @@
         }
       ],
       "dependencies": [
-        "ocaml@4.11.2000@d41d8cd9", "@opam/coq@opam:8.12.2@fe49cd42"
+        "ocaml@4.11.2000@d41d8cd9", "@opam/coq@opam:8.13.2@91755ac9"
       ],
       "devDependencies": []
+    },
+    "@opam/zarith@opam:1.12@232cc7f2": {
+      "id": "@opam/zarith@opam:1.12@232cc7f2",
+      "name": "@opam/zarith",
+      "version": "opam:1.12",
+      "source": {
+        "type": "install",
+        "source": [
+          "archive:https://opam.ocaml.org/cache/md5/bf/bf368f3d9e20b6b446d54681afc05a04#md5:bf368f3d9e20b6b446d54681afc05a04",
+          "archive:https://github.com/ocaml/Zarith/archive/release-1.12.tar.gz#md5:bf368f3d9e20b6b446d54681afc05a04"
+        ],
+        "opam": {
+          "name": "zarith",
+          "version": "1.12",
+          "path": "esy.lock/opam/zarith.1.12"
+        }
+      },
+      "overrides": [
+        {
+          "opamoverride":
+            "esy.lock/overrides/opam__s__zarith_opam__c__1.12_opam_override"
+        }
+      ],
+      "dependencies": [
+        "ocaml@4.11.2000@d41d8cd9", "@opam/ocamlfind@opam:1.8.1@b7dc3072",
+        "@opam/conf-gmp@opam:3@a623586f", "@esy-ocaml/substs@0.0.1@d41d8cd9"
+      ],
+      "devDependencies": [
+        "ocaml@4.11.2000@d41d8cd9", "@opam/ocamlfind@opam:1.8.1@b7dc3072",
+        "@opam/conf-gmp@opam:3@a623586f"
+      ]
     },
     "@opam/ocamlfind@opam:1.8.1@b7dc3072": {
       "id": "@opam/ocamlfind@opam:1.8.1@b7dc3072",
@@ -189,31 +236,32 @@
         "@opam/base-threads@opam:base@36803084"
       ]
     },
-    "@opam/coq@opam:8.12.2@fe49cd42": {
-      "id": "@opam/coq@opam:8.12.2@fe49cd42",
+    "@opam/coq@opam:8.13.2@91755ac9": {
+      "id": "@opam/coq@opam:8.13.2@91755ac9",
       "name": "@opam/coq",
-      "version": "opam:8.12.2",
+      "version": "opam:8.13.2",
       "source": {
         "type": "install",
         "source": [
-          "archive:https://opam.ocaml.org/cache/sha512/6b/6b524edbceb5795f04bbd2b52f191bfcf10b611f7a2fa0450c30b72c944f88418d261729476b64603faacfe2be5f7992a2997541e54e6f8691d4dc8b4969198d#sha512:6b524edbceb5795f04bbd2b52f191bfcf10b611f7a2fa0450c30b72c944f88418d261729476b64603faacfe2be5f7992a2997541e54e6f8691d4dc8b4969198d",
-          "archive:https://github.com/coq/coq/archive/V8.12.2.tar.gz#sha512:6b524edbceb5795f04bbd2b52f191bfcf10b611f7a2fa0450c30b72c944f88418d261729476b64603faacfe2be5f7992a2997541e54e6f8691d4dc8b4969198d"
+          "archive:https://opam.ocaml.org/cache/sha256/1e/1e7793d8483f1e939f62df6749f843df967a15d843a4a5acb024904b76e25a14#sha256:1e7793d8483f1e939f62df6749f843df967a15d843a4a5acb024904b76e25a14",
+          "archive:https://github.com/coq/coq/archive/V8.13.2.tar.gz#sha256:1e7793d8483f1e939f62df6749f843df967a15d843a4a5acb024904b76e25a14"
         ],
         "opam": {
           "name": "coq",
-          "version": "8.12.2",
-          "path": "esy.lock/opam/coq.8.12.2"
+          "version": "8.13.2",
+          "path": "esy.lock/opam/coq.8.13.2"
         }
       },
       "overrides": [],
       "dependencies": [
-        "ocaml@4.11.2000@d41d8cd9", "@opam/ocamlfind@opam:1.8.1@b7dc3072",
-        "@opam/num@opam:1.4@15ff926d",
+        "ocaml@4.11.2000@d41d8cd9", "@opam/zarith@opam:1.12@232cc7f2",
+        "@opam/ocamlfind@opam:1.8.1@b7dc3072", "@opam/num@opam:1.4@15ff926d",
         "@opam/conf-findutils@opam:1@34f14152",
         "@esy-ocaml/substs@0.0.1@d41d8cd9"
       ],
       "devDependencies": [
-        "ocaml@4.11.2000@d41d8cd9", "@opam/num@opam:1.4@15ff926d"
+        "ocaml@4.11.2000@d41d8cd9", "@opam/zarith@opam:1.12@232cc7f2",
+        "@opam/num@opam:1.4@15ff926d"
       ]
     },
     "@opam/conf-m4@opam:1@196bf219": {
@@ -237,6 +285,31 @@
       ],
       "dependencies": [
         "esy-m4@github:esy-packages/esy-m4#c7cf0ac9221be2b1f9d90e83559ca08397a629e7@d41d8cd9",
+        "@esy-ocaml/substs@0.0.1@d41d8cd9"
+      ],
+      "devDependencies": []
+    },
+    "@opam/conf-gmp@opam:3@a623586f": {
+      "id": "@opam/conf-gmp@opam:3@a623586f",
+      "name": "@opam/conf-gmp",
+      "version": "opam:3",
+      "source": {
+        "type": "install",
+        "source": [ "no-source:" ],
+        "opam": {
+          "name": "conf-gmp",
+          "version": "3",
+          "path": "esy.lock/opam/conf-gmp.3"
+        }
+      },
+      "overrides": [
+        {
+          "opamoverride":
+            "esy.lock/overrides/opam__s__conf_gmp_opam__c__3_opam_override"
+        }
+      ],
+      "dependencies": [
+        "esy-gmp@archive:https://gmplib.org/download/gmp/gmp-6.2.1.tar.xz#sha1:0578d48607ec0e272177d175fd1807c30b00fdf2@d3dc108f",
         "@esy-ocaml/substs@0.0.1@d41d8cd9"
       ],
       "devDependencies": []

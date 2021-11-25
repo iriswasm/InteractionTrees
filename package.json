@@ -16,7 +16,7 @@
 		"clean": "make clean-coq clean"
 	},
 	"dependencies": {
-		"@opam/coq": ">=8.10 <=8.13",
+		"@opam/coq": ">=8.10 <8.14",
 		"coq-paco": "github:Mbodin/coq-paco#40cea8feac992e4b69266516ed70f0916366d622",
 		"coq-ext-lib": ">=0.11.1",
 		"@opam/dune": ">=2.6",
