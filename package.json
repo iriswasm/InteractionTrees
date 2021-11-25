@@ -1,33 +1,31 @@
 {
 	"name": "coq-itree",
-	"version": "1.0.0",
+	"version": "4.0.0",
 	"description": "A Library for Representing Recursive and Impure Programs in Coq",
 	"license": "MIT",
 	"esy": {
-		"buildsInSource": true,
+		"buildsInSource": "_build",
 		"buildEnv": {
 			"COQBIN": "#{@opam/coq.bin}/",
 			"COQLIB": "#{@opam/coq.lib}/coq/",
-			"COQPATH": "#{coq-paco.install}/user-contrib:#{coq-ext-lib.install}/user-contrib",
-			"COQMAKEFILEOPTIONS": "-install user DESTDIR = '#{self.install}' COQMF_WINDRIVE = '#{@opam/coq.lib}/coq'"
+			"COQPATH": "#{coq-paco.install}/user-contrib:#{coq-ext-lib.install}/user-contrib"
 		},
-		"build": "make",
-		"install": "make install"
+		"build": "make dune-build"
 	},
 	"scripts": {
 		"clean": "make clean-coq clean"
 	},
 	"dependencies": {
 		"@opam/coq": ">=8.10 <=8.13",
-		"coq-paco": "github:Mbodin/coq-paco#ca6a4b5f12a5fedac6a47ee775bc2e1b36ce7520",
-		"coq-ext-lib": "*",
+		"coq-paco": "github:Mbodin/coq-paco#40cea8feac992e4b69266516ed70f0916366d622",
+		"coq-ext-lib": ">=0.11.1",
+		"@opam/dune": ">=2.6",
 		"ocaml": "<4.12",
 		"@opam/ocamlfind": "1.8.1"
 	},
 	"resolutions": {
 		"coq-ext-lib": {
 			"source": "github:coq-community/coq-ext-lib#43e979ba74200ec924c28561b3f189fe37ff5c07",
-			"version": "0.11.5",
 			"override": {
 				"dependencies": {
 					"@opam/coq": ">=8.8",

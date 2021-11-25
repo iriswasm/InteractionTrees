@@ -1,8 +1,15 @@
-.PHONY: clean all coq test tests examples tutorial hoare_example install uninstall depgraph for-dune
+.PHONY: clean all coq test tests examples tutorial hoare_example install uninstall depgraph for-dune dune-build
 
 COQPATHFILE=$(wildcard _CoqPath)
 
 build: coq
+
+# Removes a lot of warnings from dune complaining that $HOME is undefined.
+HOME ?= `pwd`
+export HOME
+
+dune-build:
+	dune build
 
 include common.mk
 
@@ -13,10 +20,10 @@ all:
 	$(MAKE) tutorial
 
 install: Makefile.coq coq
-	export HOME=`pwd`; $(MAKE) -f $< $@
+	$(MAKE) -f $< $@
 
 uninstall: Makefile.coq
-	export HOME=`pwd`; $(MAKE) -f $< $@
+	$(MAKE) -f $< $@
 
 test: examples tests
 
@@ -35,6 +42,7 @@ clean: clean-coq
 	$(MAKE) -C tests clean
 	$(MAKE) -C examples clean
 	$(MAKE) -C tutorial clean
+	rm -Rf _build || true
 
 _CoqProject: $(COQPATHFILE) _CoqConfig Makefile
 	@ echo "# Generating _CoqProject"

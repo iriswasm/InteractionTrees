@@ -1,5 +1,5 @@
 {
-  "checksum": "39f249ba2d841893223e1a051557b87f",
+  "checksum": "6a1700252bb306683eb188a84fe34197",
   "root": "coq-itree@link-dev:./package.json",
   "node": {
     "ocaml@4.11.2000@d41d8cd9": {
@@ -32,16 +32,16 @@
       "dependencies": [],
       "devDependencies": []
     },
-    "coq-paco@github:Mbodin/coq-paco#ca6a4b5f12a5fedac6a47ee775bc2e1b36ce7520@d41d8cd9": {
+    "coq-paco@github:Mbodin/coq-paco#40cea8feac992e4b69266516ed70f0916366d622@d41d8cd9": {
       "id":
-        "coq-paco@github:Mbodin/coq-paco#ca6a4b5f12a5fedac6a47ee775bc2e1b36ce7520@d41d8cd9",
+        "coq-paco@github:Mbodin/coq-paco#40cea8feac992e4b69266516ed70f0916366d622@d41d8cd9",
       "name": "coq-paco",
       "version":
-        "github:Mbodin/coq-paco#ca6a4b5f12a5fedac6a47ee775bc2e1b36ce7520",
+        "github:Mbodin/coq-paco#40cea8feac992e4b69266516ed70f0916366d622",
       "source": {
         "type": "install",
         "source": [
-          "github:Mbodin/coq-paco#ca6a4b5f12a5fedac6a47ee775bc2e1b36ce7520"
+          "github:Mbodin/coq-paco#40cea8feac992e4b69266516ed70f0916366d622"
         ]
       },
       "overrides": [],
@@ -60,10 +60,10 @@
       "overrides": [],
       "dependencies": [
         "ocaml@4.11.2000@d41d8cd9",
-        "coq-paco@github:Mbodin/coq-paco#ca6a4b5f12a5fedac6a47ee775bc2e1b36ce7520@d41d8cd9",
+        "coq-paco@github:Mbodin/coq-paco#40cea8feac992e4b69266516ed70f0916366d622@d41d8cd9",
         "coq-ext-lib@github:coq-community/coq-ext-lib#43e979ba74200ec924c28561b3f189fe37ff5c07@03456615",
         "@opam/ocamlfind@opam:1.8.1@b7dc3072",
-        "@opam/coq@opam:8.12.2@fe49cd42"
+        "@opam/dune@opam:2.9.1@1e504822", "@opam/coq@opam:8.12.2@fe49cd42"
       ],
       "devDependencies": []
     },
@@ -162,6 +162,33 @@
       ],
       "devDependencies": [ "ocaml@4.11.2000@d41d8cd9" ]
     },
+    "@opam/dune@opam:2.9.1@1e504822": {
+      "id": "@opam/dune@opam:2.9.1@1e504822",
+      "name": "@opam/dune",
+      "version": "opam:2.9.1",
+      "source": {
+        "type": "install",
+        "source": [
+          "archive:https://opam.ocaml.org/cache/sha256/b3/b374feb22b34099ccc6dd32128e18d088ff9a81837952b29f05110b308c09f26#sha256:b374feb22b34099ccc6dd32128e18d088ff9a81837952b29f05110b308c09f26",
+          "archive:https://github.com/ocaml/dune/releases/download/2.9.1/dune-2.9.1.tbz#sha256:b374feb22b34099ccc6dd32128e18d088ff9a81837952b29f05110b308c09f26"
+        ],
+        "opam": {
+          "name": "dune",
+          "version": "2.9.1",
+          "path": "esy.lock/opam/dune.2.9.1"
+        }
+      },
+      "overrides": [],
+      "dependencies": [
+        "ocaml@4.11.2000@d41d8cd9", "@opam/base-unix@opam:base@87d0b2eb",
+        "@opam/base-threads@opam:base@36803084",
+        "@esy-ocaml/substs@0.0.1@d41d8cd9"
+      ],
+      "devDependencies": [
+        "ocaml@4.11.2000@d41d8cd9", "@opam/base-unix@opam:base@87d0b2eb",
+        "@opam/base-threads@opam:base@36803084"
+      ]
+    },
     "@opam/coq@opam:8.12.2@fe49cd42": {
       "id": "@opam/coq@opam:8.12.2@fe49cd42",
       "name": "@opam/coq",
@@ -225,6 +252,40 @@
           "name": "conf-findutils",
           "version": "1",
           "path": "esy.lock/opam/conf-findutils.1"
+        }
+      },
+      "overrides": [],
+      "dependencies": [ "@esy-ocaml/substs@0.0.1@d41d8cd9" ],
+      "devDependencies": []
+    },
+    "@opam/base-unix@opam:base@87d0b2eb": {
+      "id": "@opam/base-unix@opam:base@87d0b2eb",
+      "name": "@opam/base-unix",
+      "version": "opam:base",
+      "source": {
+        "type": "install",
+        "source": [ "no-source:" ],
+        "opam": {
+          "name": "base-unix",
+          "version": "base",
+          "path": "esy.lock/opam/base-unix.base"
+        }
+      },
+      "overrides": [],
+      "dependencies": [ "@esy-ocaml/substs@0.0.1@d41d8cd9" ],
+      "devDependencies": []
+    },
+    "@opam/base-threads@opam:base@36803084": {
+      "id": "@opam/base-threads@opam:base@36803084",
+      "name": "@opam/base-threads",
+      "version": "opam:base",
+      "source": {
+        "type": "install",
+        "source": [ "no-source:" ],
+        "opam": {
+          "name": "base-threads",
+          "version": "base",
+          "path": "esy.lock/opam/base-threads.base"
         }
       },
       "overrides": [],

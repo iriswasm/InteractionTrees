@@ -47,8 +47,8 @@ tutorial/imp_test.mli
 
 *.native
 
-_esy/
-node_modules/
+/_esy/
+/node_modules/
 
 coq-itree.install
 
