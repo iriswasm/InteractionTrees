@@ -1,35 +1,54 @@
+(* begin hide *)
 From Coq Require Import
-     Arith.PeanoNat
-     Lists.List
-     Strings.String
-     Morphisms
-     Setoid
-     RelationClasses
-     Logic.Classical_Prop
-     Logic.FunctionalExtensionality
-.
+     Morphisms.
 
 From ExtLib Require Import
-     Data.String
-     Structures.Monad
-     Structures.Traversable
-     Data.List.
+     Structures.Monad.
+
+From Paco Require Import paco.
 
 From ITree Require Import
      ITree
      ITreeFacts
-     Events.MapDefault
-     Events.State
-     Events.StateFacts
-     Events.Exception
-.
-
+     Events.Exception.
 (* end hide *)
 
 Import Monads.
 Import MonadNotation.
-Local Open Scope monad_scope.
-From Paco Require Import paco.
+#[local] Open Scope monad_scope.
+
+Lemma try_catch_ret : forall E Err R r (kcatch : Err -> itree (exceptE Err +' E) R),
+    try_catch (Ret r) kcatch ≅ Ret r.
+Proof.
+  intros. unfold try_catch. unfold iter, Iter_Kleisli, Basics.iter, MonadIter_itree.
+  rewrite unfold_iter. cbn. rewrite bind_ret_l. reflexivity.
+Qed.
+
+Lemma try_catch_tau : forall E Err R t (kcatch : Err -> itree (exceptE Err +' E) R),
+    try_catch (Tau t) kcatch ≅ Tau (try_catch t kcatch).
+Proof.
+  intros. unfold try_catch. unfold iter, Iter_Kleisli, Basics.iter, MonadIter_itree.
+  rewrite unfold_iter. cbn. rewrite bind_ret_l. reflexivity.
+Qed.
+
+Lemma try_catch_exc : forall E Err R exc (k :void -> itree (exceptE Err +' E) R)
+                               (kcatch : Err -> itree (exceptE Err +' E) R),
+    try_catch (Vis (inl1 (Throw exc)) k ) kcatch ≅ kcatch exc.
+Proof.
+   intros. unfold try_catch. unfold iter, Iter_Kleisli, Basics.iter, MonadIter_itree.
+   rewrite unfold_iter. cbn. unfold ITree.map.
+   rewrite bind_bind. setoid_rewrite bind_ret_l. rewrite bind_ret_r.
+   reflexivity.
+Qed.
+
+Lemma try_catch_ev : forall E A Err R (ev: E A) k (kcatch : Err -> itree (exceptE Err +' E) R),
+    try_catch (Vis (inr1 ev) k ) kcatch ≅ Vis (inr1 ev) (fun x => Tau (try_catch (k x) kcatch) ).
+Proof.
+  intros. unfold try_catch. unfold iter, Iter_Kleisli, Basics.iter, MonadIter_itree.
+  rewrite unfold_iter. cbn. unfold ITree.map at 3.
+  setoid_rewrite bind_bind. rewrite bind_trigger. cbn.
+  setoid_rewrite bind_ret_l. reflexivity.
+Qed.
 
 Global Instance proper_eqitree_try_catch {E Err R} : Proper (eq_itree eq ==> pointwise_relation Err (eq_itree eq) ==> eq_itree eq) (@try_catch Err R E).
 Proof.
@@ -42,7 +61,7 @@ Proof.
     + destruct e. cbn. repeat rewrite bind_map. repeat rewrite bind_ret_r.  gfinal.
       right. eapply paco2_mon; try apply Hk. intros; contradiction.
     + cbn. repeat rewrite bind_map. repeat rewrite bind_trigger. gstep. constructor. intros.
-      gstep. constructor. gfinal. left. eauto.
+      gstep. constructor. gfinal. left. eauto with itree.
 Qed.
 
 Global Instance proper_eutt_try_catch {E Err R} : Proper (eutt eq ==> pointwise_relation Err (eutt eq) ==> eutt eq) (@try_catch Err R E).
@@ -57,7 +76,7 @@ Proof.
     + destruct e. cbn. repeat rewrite bind_map. repeat rewrite bind_ret_r.  gfinal.
       right. eapply paco2_mon; try apply Hk. intros; contradiction.
     + cbn. repeat rewrite bind_map. repeat rewrite bind_trigger. gstep. constructor. intros.
-      gstep. constructor. gfinal. left. eauto.
+      gstep. constructor. gfinal. left. eauto with itree.
   - rewrite bind_ret_l. rewrite tau_euttge. rewrite unfold_iter_ktree. eapply IHHt; eauto.
   - rewrite bind_ret_l. rewrite tau_euttge. rewrite unfold_iter_ktree. eapply IHHt; eauto.
 Qed.
@@ -75,11 +94,10 @@ Proof.
     + destruct e. cbn. repeat rewrite bind_map. repeat rewrite bind_ret_r. repeat rewrite bind_ret_l.  gfinal.
       right. pfold; constructor; auto.
     + cbn. repeat rewrite bind_map. repeat rewrite bind_trigger. gstep. constructor. intros.
-      gstep. constructor. gfinal. left. pclearbot. eapply CIH; eauto.
+      gstep. constructor. gfinal. left. pclearbot. eapply CIH; eauto with itree.
   - rewrite bind_ret_l. rewrite tau_euttge. rewrite unfold_iter_ktree. eapply IHHt; eauto.
   - rewrite bind_ret_l. rewrite tau_euttge. rewrite unfold_iter_ktree. eapply IHHt; eauto.
 Qed.
-
 
 Definition throw_prefix_ret : forall E Err R (r : R),
     @throw_prefix Err R E (Ret r) ≅ Ret (inl r).
@@ -95,7 +113,7 @@ Proof.
 Qed.
 
 Definition throw_prefix_exc : forall E Err R k (e : Err), 
-    @throw_prefix Err R E (Vis (inl1 (Throw _ e) ) k) ≅ Ret (inr e).
+    @throw_prefix Err R E (Vis (inl1 (Throw e) ) k) ≅ Ret (inr e).
 Proof.
   intros. setoid_rewrite unfold_iter_ktree. cbn. rewrite bind_ret_l. reflexivity.
 Qed.
@@ -127,7 +145,7 @@ Qed.
 Lemma throw_prefix_bind_decomp : forall E Err R (t : itree (exceptE Err +' E) R ),
     t ≈ ITree.bind (throw_prefix t) (fun r => 
                                     match r with 
-                                    | inr e => v <- trigger (inl1 (Throw _ e));; match v : void with end
+                                    | inr e => v <- trigger (inl1 (Throw e));; match v : void with end
                                     | inl a => Ret a
                                     end).
 Proof.

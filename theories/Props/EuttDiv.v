@@ -13,7 +13,9 @@ From Paco Require Import paco.
 
 Import Monads.
 Import MonadNotation.
-Local Open Scope monad_scope.
+#[local] Open Scope monad_scope.
+
+Set Implicit Arguments.
 
 (** Defines eutt_div, a relation for relating ITrees 
     over different return types, that never return and whose events are bisimilar. Also contains div_cast, a function that casts ITrees that never return from one return type to another while preserving its events.
@@ -38,8 +40,7 @@ Proof.
     assert (ITree.bind (Tau t0) f ≅ Tau (ITree.bind t0 f)); try apply bind_tau.
     setoid_rewrite H1. etau.
   - specialize (itree_eta t) as Ht. rewrite <- H in Ht.
-    cbn. rewrite Ht. rewrite bind_vis. evis. intros.
-    apply euttG_base. left. apply CIHH. apply H0.
+    cbn. rewrite Ht. rewrite bind_vis. evis.
 Qed.   
 
 Lemma eutt_div_subrel : forall (E : Type -> Type) (A B : Type) (R : A -> B -> Prop) 
@@ -49,7 +50,6 @@ Proof.
   intros.
   eapply eutt_subrel with (R1 := fun a b => False); tauto.
 Qed.
-
 
 Lemma eutt_imp_div : forall (E : Type -> Type) (A B : Type) (R : A -> B -> Prop) 
                             (ta : itree E A) (tb : itree E B),
@@ -70,7 +70,7 @@ Proof.
     apply CIH; auto.
     rewrite H. auto.
   - rewrite <- x0. rewrite <- x. constructor.
-    intros. right. apply CIH; auto.
+    intros. right. apply CIH; auto with itree.
     specialize (itree_eta ta) as Hta. rewrite <- x0 in Hta.
     rewrite Hta in Hdiv. pinversion Hdiv.
     dependent destruction H2. apply H0.
@@ -129,7 +129,7 @@ Proof.
 Qed.
 
 
-Global Instance proper_eutt_div {E A B} {R R'} : Proper ( (@eutt E A A R) ==> (@eutt E B B R') ==> iff) (eutt_div).
+#[global] Instance proper_eutt_div {E A B} {R R'} : Proper ((@eutt E A A R) ==> (@eutt E B B R') ==> iff) (eutt_div).
 Proof.
   intros t1 t2 Ht12 t3 t4 Ht34. split; intros.
   - apply eutt_div_imp_div in H as Ht1. apply eutt_div_sym in H. 
@@ -166,7 +166,26 @@ Proof.
   intros. apply eutt_div_subrel. apply div_bind_nop. auto.
 Qed.
 
-Global Instance proper_div_cast {E R1 R2} : Proper (@eutt E R1 R1 eq ==> @eutt E R2 R2 eq) div_cast.
+#[global] Instance proper_div_cast {E R1 R2} : Proper (@eutt E R1 R1 eq ==> @eutt E R2 R2 eq) div_cast.
 Proof.
   intros t1 t2 Heutt. unfold div_cast. cbn. rewrite Heutt. reflexivity.
+Qed.
+
+Ltac infer_div H :=
+  match type of H with
+  | eutt_div ?t1 ?t2 =>
+      apply eutt_div_sym in H as ?H1;
+      apply eutt_div_imp_div in H1;
+      apply eutt_div_imp_div in H as ?H
+  end.
+
+Lemma div_cast_cast E (A B : Type) (t1 t2 : itree E A) (R : A -> A -> Prop) (R' : B -> B -> Prop)
+  : must_diverge t1 -> eutt R t1 t2 -> eutt R' (div_cast t1) (div_cast t2).
+Proof.
+  intros. apply eutt_div_subrel.
+  apply eutt_imp_div in H0; auto.
+  infer_div H0.
+  apply eutt_div_trans with (t2 := t2); try apply div_bind_nop; auto.
+  apply eutt_div_trans with (t2 := t1); auto.
+  apply eutt_div_sym. apply div_bind_nop. auto.
 Qed.

@@ -9,6 +9,8 @@ From ITree Require Export
      Basics.CategoryKleisliFacts
      Basics.FunctionFacts
      Core.ITreeDefinition
+     Eq
+     Core.ITreeMonad
      Core.KTreeFacts
      Indexed.FunctionFacts
      Interp.TranslateFacts
@@ -16,7 +18,3 @@ From ITree Require Export
      Interp.HandlerFacts
      Interp.RecursionFacts
      .
-
-Require Export ITree.Eq.
-(* Coq sometimes thinks [From ITree Require Export Eq.] means
-   [Require Export ITree.Eq.Eq.] *)

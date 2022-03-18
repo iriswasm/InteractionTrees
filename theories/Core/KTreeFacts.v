@@ -19,7 +19,8 @@ From ITree Require Import
      Core.ITreeDefinition
      Core.ITreeMonad
      Core.KTree
-     Eq.Eq
+     Eq.Shallow
+     Eq.Eqit
      Eq.UpToTaus
      Eq.Paco2.
 
@@ -109,7 +110,7 @@ Proof.
   intros.
   eapply paco2_mon_bot; eauto.
   intros ? ? ?. red.
-  induction 1; auto.
+  induction 1; auto with itree.
 Qed.
 
 #[global] Instance eq_itree_iter {E A B} :

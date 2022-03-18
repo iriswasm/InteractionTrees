@@ -19,11 +19,13 @@ From ITree Require Import
      Basics.Function
      Core.ITreeDefinition
      Core.KTree
-     Eq.Eq
+     Eq.Eqit
      Eq.UpToTaus
      Eq.Paco2
      Indexed.Sum
      Indexed.Function
+     Indexed.Relation
+     Interp.Handler
      Interp.Interp
      Interp.InterpFacts
      Interp.Recursion.
@@ -72,8 +74,11 @@ Qed.
 (** [mrec ctx] is equivalent to [interp (mrecursive ctx)],
     where [mrecursive] is defined as follows. *)
 Definition mrecursive (f : D ~> itree (D +' E))
-  : (D +' E) ~> itree E :=
-  case_ (mrec f) ITree.trigger.
+  : (D +' E) ~> itree E := fun _ m =>
+  match m with
+  | inl1 m => mrec f m
+  | inr1 m => ITree.trigger m
+  end.
 
 Global Instance eq_itree_mrec {R} :
   Proper (eq_itree eq ==> eq_itree eq) (@interp_mrec _ _ ctx R).
@@ -84,7 +89,7 @@ Proof.
   - apply reflexivity.
   - econstructor. eauto with paco.
   - econstructor. gbase. eapply CIH. apply eqit_bind; auto; reflexivity.
-  - econstructor. gstep; constructor. auto with paco.
+  - econstructor. gstep; constructor. auto with paco itree.
 Qed.
 
 Theorem interp_mrec_bind {U T} (t : itree _ U) (k : U -> itree _ T) :
@@ -149,7 +154,7 @@ Proof.
 Qed.
 
 Theorem unfold_interp_mrec_h {T} (t : itree _ T)
-  : interp_mrec ctx (interp (case_ ctx inr_) t)
+  : interp_mrec ctx (interp (case_ (C := Handler) ctx inr_) t)
   ≈ interp_mrec ctx t.
 Proof.
   rewrite <- tau_eutt.
@@ -191,10 +196,10 @@ Proof.
   3: { destruct e; gstep; constructor.
     + gfinal; left. apply CIH.
       eapply eutt_clo_bind; eauto.
-      intros ? _ []. auto.
-    + gstep; constructor. auto with paco.
+      intros ? _ []. auto with itree.
+    + gstep; constructor. auto with paco itree.
   }
-  1,2: gstep; constructor; auto with paco.
+  1,2: gstep; constructor; auto with paco itree.
   1,2: rewrite unfold_interp_mrec, tau_euttge; auto.
 Qed.
 
@@ -222,8 +227,8 @@ Proof.
   reflexivity.
 Qed.
 
-
-Global Instance euttge_interp_mrec {D E} :
+#[global]
+Instance euttge_interp_mrec {D E} :
   @Proper ((D ~> itree (D +' E)) -> (itree (D +' E) ~> itree E))
           (Relation.i_pointwise (fun _ => euttge eq) ==>
            Relation.i_respectful (fun _ => euttge eq) (fun _ => euttge eq))
@@ -236,14 +241,15 @@ Proof.
   3: { destruct e; gstep; constructor.
     + gfinal; left. apply CIH.
       eapply eqit_bind; auto. apply Hfg.
-    + gstep; constructor. auto with paco.
+    + gstep; constructor. auto with paco itree.
   }
   1,2: gstep; constructor; auto with paco.
   1: rewrite unfold_interp_mrec, tau_euttge; auto.
   discriminate.
 Qed.
 
-Global Instance euttge_interp_mrec' {E D R} (ctx : D ~> itree (D +' E)) :
+#[global]
+Instance euttge_interp_mrec' {E D R} (ctx : D ~> itree (D +' E)) :
   Proper (euttge eq ==> euttge eq) (@interp_mrec _ _ ctx R).
 Proof.
   do 4 red. eapply euttge_interp_mrec. reflexivity.

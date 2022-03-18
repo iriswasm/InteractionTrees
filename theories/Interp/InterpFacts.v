@@ -7,6 +7,8 @@
  *)
 
 (* begin hide *)
+Set Warnings "-deprecated-hint-rewrite-without-locality".
+
 From Coq Require Import
      Program
      Setoid
@@ -23,7 +25,8 @@ From ITree Require Import
      Core.ITreeDefinition
      Core.KTree
      Core.KTreeFacts
-     Eq.Eq
+     Eq.Shallow
+     Eq.Eqit
      Eq.UpToTaus
      Eq.Paco2
      Indexed.Sum
@@ -36,6 +39,7 @@ From ITree Require Import
 Import ITreeNotations.
 (* end hide *)
 
+#[global]
 Instance Equivalence_eq_Handler {E F : Type -> Type}
   : Equivalence (@eq_Handler E F).
 Proof.
@@ -43,6 +47,7 @@ Proof.
   apply (Equivalence_i_pointwise (fun R => eq_itree eq)).
 Qed.
 
+#[global]
 Instance Equivalence_eutt_Handler {E F : Type -> Type}
   : Equivalence (@eutt_Handler E F).
 Proof.
@@ -108,6 +113,7 @@ Hint Rewrite @interp_vis : itree.
 Hint Rewrite @interp_trigger : itree.
 
 (** ** [interp] properness *)
+#[global]
 Instance eq_itree_interp {E F}
   : @Proper (Handler E F -> (itree E ~> itree F))
             (eq_Handler ==> respectful_eq_itree)
@@ -121,9 +127,10 @@ Proof.
   destruct Hlr; cbn; subst; try discriminate; pclearbot; try (gstep; constructor; eauto with paco; fail).
   guclo eqit_clo_bind. econstructor; [eapply Hfg|].
   intros ? _ [].
-  gstep; econstructor; eauto with paco.
+  gstep; econstructor; eauto with paco itree.
 Qed.
 
+#[global]
 Instance eq_itree_interp' {E F R f}
   : Proper (eq_itree eq ==> eq_itree eq) (@interp E (itree F) _ _ _ f R).
 Proof.
@@ -132,6 +139,7 @@ Proof.
   reflexivity.
 Qed.
 
+#[global]
 Instance eutt_interp (E F : Type -> Type)
   : @Proper (Handler E F -> (itree E ~> itree F))
             (eq2 ==> respectful_eutt)
@@ -147,11 +155,12 @@ Proof.
   - gstep. constructor. eauto with paco.
   - guclo eqit_clo_bind; econstructor; [apply H|].
     intros; subst.
-    gstep; constructor; eauto with paco.
+    gstep; constructor; eauto with paco itree.
   - rewrite tau_euttge, unfold_interp. auto.
   - rewrite tau_euttge, unfold_interp. auto.
 Qed.
 
+#[global]
 Instance euttge_interp (E F : Type -> Type)
   : @Proper (Handler E F -> (itree E ~> itree F))
             (i_pointwise (fun _ => euttge eq) ==>
@@ -168,12 +177,12 @@ Proof.
   - gstep. constructor. eauto with paco.
   - guclo eqit_clo_bind; econstructor; [apply H|].
     intros; subst.
-    gstep; constructor; eauto with paco.
+    gstep; constructor; eauto with paco itree.
   - rewrite tau_euttge, unfold_interp. auto.
   - discriminate.
 Qed.
 
-
+#[global]
 Instance eutt_interp' {E F : Type -> Type} {R : Type} (RR: R -> R -> Prop) (f : E ~> itree F) :
   Proper (eutt RR ==> eutt RR)
          (@interp E (itree F) _ _ _ f R).
@@ -188,15 +197,12 @@ Proof.
   - estep.
   - ebind; econstructor.
     + reflexivity.
-    + intros; subst.
-      estep.
-      ebase.
-  - rewrite tau_euttge, unfold_interp.
-    eauto.
-  - rewrite tau_euttge, unfold_interp.
-    eauto.
+    + intros; subst. estep. ebase.
+  - rewrite tau_euttge, unfold_interp. eauto.
+  - rewrite tau_euttge, unfold_interp. eauto.
 Qed.
 
+#[global]
 Instance euttge_interp' {E F : Type -> Type} {R : Type} (f : E ~> itree F) :
   Proper (euttge eq ==> euttge eq)
          (@interp E (itree F) _ _ _ f R).

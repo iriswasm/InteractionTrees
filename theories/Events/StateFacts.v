@@ -18,7 +18,7 @@ From ITree Require Import
      Core.ITreeDefinition
      Core.KTree
      Core.KTreeFacts
-     Eq.Eq
+     Eq.Eqit
      Eq.UpToTaus
      Eq.Paco2
      Indexed.Sum
@@ -59,6 +59,7 @@ Proof.
     apply eqit_bind; reflexivity.
 Qed.
 
+#[global]
 Instance eq_itree_interp_state {E F S R} (h : E ~> Monads.stateT S (itree F)) :
   Proper (eq_itree eq ==> eq ==> eq_itree eq)
          (@interp_state _ _ _ _ _ _ h R).
@@ -72,7 +73,7 @@ Proof.
   - gstep; constructor; auto with paco.
   - guclo eqit_clo_bind. econstructor.
     + reflexivity.
-    + intros [] _ []. gstep; constructor; auto with paco.
+    + intros [] _ []. gstep; constructor; auto with paco itree.
 Qed.
 
 Lemma interp_state_ret {E F : Type -> Type} {R S : Type}
@@ -148,6 +149,7 @@ Proof.
       auto with paco.
 Qed.
 
+#[global]
 Instance eutt_interp_state {E F: Type -> Type} {S : Type}
          (h : E ~> Monads.stateT S (itree F)) R RR :
   Proper (eutt RR ==> eq ==> eutt (prod_rel eq RR)) (@interp_state E (itree F) S _ _ _ h R).
@@ -166,6 +168,7 @@ Proof.
   - rewrite tau_euttge, unfold_interp_state; eauto.
 Qed.
 
+#[global]
 Instance eutt_interp_state_eq {E F: Type -> Type} {S : Type}
          (h : E ~> Monads.stateT S (itree F)) R :
   Proper (eutt eq ==> eq ==> eutt eq) (@interp_state E (itree F) S _ _ _ h R).
