@@ -23,12 +23,13 @@ depopts: [
 depends: [
   "ocaml" {>= "4.05.0"}
   "ocamlfind" {build}
-  "num"
+  "dune" {>= "2.5.1"}
   "conf-findutils" {build}
   "zarith" {>= "1.10"}
 ]
 conflicts: [
-  "ocaml-option-nnp"
+  "base-nnp"
+  "ocaml-option-nnpchecker"
 ]
 build: [
   [
@@ -36,27 +37,24 @@ build: [
     "-configdir" "%{lib}%/coq/config"
     "-prefix" prefix
     "-mandir" man
-    "-docdir" doc
+    "-docdir" "%{doc}%/coq"
     "-libdir" "%{lib}%/coq"
     "-datadir" "%{share}%/coq"
     "-coqide" "no"
     "-native-compiler" "yes" {coq-native:installed} "no" {!coq-native:installed}
   ]
-  [make "COQ_USE_DUNE=" "-j%{jobs}%"]
-  [make "COQ_USE_DUNE=" "-j%{jobs}%" "byte"]
+  [ make "COQ_USE_DUNE=" "-j%{jobs}%" ]
 ]
 install: [
-  [make "COQ_USE_DUNE=" "install"]
-  [make "COQ_USE_DUNE=" "install-byte"]
+  [ make "COQ_USE_DUNE=" "install" ]
 ]
 
-patches: [ "disable_warn_70.patch" ]
+patches: [ "ld_stricter.patch" ]
 extra-files: [
-   ["coq.install" "sha512=b501737b4dbd22adc1c0377d744448056fb1dc493caf72c05f57c8463cf23f758373605ab3a50b9f505e4c856c41039d0bd7f81f96ed62adc6a674179523e7d2"]
-   ["disable_warn_70.patch" "sha512=f4bcf3d4b7700c021d05da978995fdaea63571db76d0d2caeb1a0093d0c2898a278770e40c7621114a215d293434c7b173801167b81c362d3797bca382c38d41"]
+  [ "ld_stricter.patch" "sha256=a5cd1fe65889bb908e1194c37de428266b422f6040b5d729611eb100f054b591" ]
 ]
 
 url {
-  src: "https://github.com/coq/coq/archive/V8.13.2.tar.gz"
-  checksum: "sha256=1e7793d8483f1e939f62df6749f843df967a15d843a4a5acb024904b76e25a14"
+  src: "https://github.com/coq/coq/archive/refs/tags/V8.14.1.tar.gz"
+  checksum: "sha256=3cbfc1e1a72b16d4744f5b64ede59586071e31d9c11c811a0372060727bfd9c3"
 }

@@ -16,12 +16,11 @@
 		"clean": "make clean-coq clean"
 	},
 	"dependencies": {
-		"@opam/coq": ">=8.10 <8.14",
-		"coq-paco": "github:Mbodin/coq-paco#40cea8feac992e4b69266516ed70f0916366d622",
+		"@opam/coq": ">=8.12",
+		"coq-paco": "github:Mbodin/coq-paco#578aa3c31cae3ecb2232e0f10bad3470c33554cb",
 		"coq-ext-lib": ">=0.11.1",
 		"@opam/dune": ">=2.6",
-		"ocaml": "<4.12",
-		"@opam/ocamlfind": "1.8.1"
+		"ocaml": "<4.12"
 	},
 	"resolutions": {
 		"coq-ext-lib": {
