@@ -9,7 +9,8 @@ HOME ?= `pwd`
 export HOME
 
 dune-build:
-	dune build
+	dune build -p coq-itree
+	dune build @install
 
 include common.mk
 
