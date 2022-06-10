@@ -19,8 +19,7 @@
 		"@opam/coq": ">=8.12",
 		"coq-paco": "github:Mbodin/coq-paco#578aa3c31cae3ecb2232e0f10bad3470c33554cb",
 		"coq-ext-lib": ">=0.11.1",
-		"@opam/dune": ">=2.6",
-		"ocaml": "<4.12"
+		"@opam/dune": ">=2.6"
 	},
 	"resolutions": {
 		"coq-ext-lib": {
