@@ -19,7 +19,7 @@
 	},
 	"dependencies": {
 		"@opam/coq": ">=8.8 <=8.13.2",
-		"coq-paco": "github:Mbodin/paco#40cea8feac992e4b69266516ed70f0916366d622",
+		"coq-paco": "github:iriswasm/coq-paco#40cea8feac992e4b69266516ed70f0916366d622",
 		"coq-ext-lib": "0.11.3",
 		"ocaml": "*"
 	},
